@@ -1,0 +1,23 @@
+{
+  "name": "bixie/perfectview_api",
+  "module": "bixie/perfectview_api",
+  "type": "pagekit-extension",
+  "version": "0.0.7",
+  "title": "Bixie Perfectview Api",
+  "description": "API client for Perfectview CRM.",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Bixie",
+      "email": "info@bixie.org",
+      "homepage": "http://www.bixie.org"
+    }
+  ],
+  "require": {
+    "phpro/soap-client": "~0.2.1"
+  },
+  "extra": {
+    "icon": "icon.svg",
+    "scripts": "scripts.php"
+  }
+}
