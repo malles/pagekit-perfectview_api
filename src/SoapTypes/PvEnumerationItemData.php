@@ -2,8 +2,12 @@
 
 namespace Bixie\PerfectviewApi\SoapTypes;
 
-class PvEnumerationItemData
+use Bixie\PerfectviewApi\Client\JsonSerializableTrait;
+
+class PvEnumerationItemData implements \JsonSerializable
 {
+
+    use JsonSerializableTrait;
 
     /**
      * @var string

@@ -2,8 +2,12 @@
 
 namespace Bixie\PerfectviewApi\SoapTypes;
 
-class PvTelephoneNumberData
+use Bixie\PerfectviewApi\Client\JsonSerializableTrait;
+
+class PvTelephoneNumberData implements \JsonSerializable
 {
+
+    use JsonSerializableTrait;
 
     /**
      * @var guid

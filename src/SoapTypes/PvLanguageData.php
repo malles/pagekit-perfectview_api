@@ -2,8 +2,12 @@
 
 namespace Bixie\PerfectviewApi\SoapTypes;
 
-class PvLanguageData
+use Bixie\PerfectviewApi\Client\JsonSerializableTrait;
+
+class PvLanguageData implements \JsonSerializable
 {
+
+    use JsonSerializableTrait;
 
     /**
      * @var string

@@ -2,8 +2,12 @@
 
 namespace Bixie\PerfectviewApi\SoapTypes;
 
-class PvCounterData
+use Bixie\PerfectviewApi\Client\JsonSerializableTrait;
+
+class PvCounterData implements \JsonSerializable
 {
+
+    use JsonSerializableTrait;
 
     /**
      * @var TabPageType

@@ -2,8 +2,12 @@
 
 namespace Bixie\PerfectviewApi\SoapTypes;
 
-class PvAuditData
+use Bixie\PerfectviewApi\Client\JsonSerializableTrait;
+
+class PvAuditData implements \JsonSerializable
 {
+
+    use JsonSerializableTrait;
 
     /**
      * @var \DateTime

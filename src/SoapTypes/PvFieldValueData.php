@@ -2,8 +2,12 @@
 
 namespace Bixie\PerfectviewApi\SoapTypes;
 
-class PvFieldValueData
+use Bixie\PerfectviewApi\Client\JsonSerializableTrait;
+
+class PvFieldValueData implements \JsonSerializable
 {
+
+    use JsonSerializableTrait;
 
     /**
      * @var guid

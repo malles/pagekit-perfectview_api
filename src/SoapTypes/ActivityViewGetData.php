@@ -2,10 +2,13 @@
 
 namespace Bixie\PerfectviewApi\SoapTypes;
 
+use Bixie\PerfectviewApi\Client\JsonSerializableTrait;
 use Bixie\PerfectviewApi\Client\PerfectviewMethodInterface;
 
-class ActivityViewGetData implements PerfectviewMethodInterface
+class ActivityViewGetData implements \JsonSerializable, PerfectviewMethodInterface
 {
+
+    use JsonSerializableTrait;
 
     /**
      * @var ApiCredentials

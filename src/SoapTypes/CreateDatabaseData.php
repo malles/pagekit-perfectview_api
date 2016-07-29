@@ -2,8 +2,12 @@
 
 namespace Bixie\PerfectviewApi\SoapTypes;
 
-class CreateDatabaseData
+use Bixie\PerfectviewApi\Client\JsonSerializableTrait;
+
+class CreateDatabaseData implements \JsonSerializable
 {
+
+    use JsonSerializableTrait;
 
     /**
      * @var Database

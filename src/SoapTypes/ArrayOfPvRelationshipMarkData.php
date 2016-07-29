@@ -2,8 +2,12 @@
 
 namespace Bixie\PerfectviewApi\SoapTypes;
 
-class ArrayOfPvRelationshipMarkData
+use Bixie\PerfectviewApi\Client\JsonSerializableTrait;
+
+class ArrayOfPvRelationshipMarkData implements \JsonSerializable
 {
+
+    use JsonSerializableTrait;
 
     /**
      * @var PvRelationshipMarkData
