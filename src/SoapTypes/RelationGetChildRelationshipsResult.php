@@ -2,8 +2,13 @@
 
 namespace Bixie\PerfectviewApi\SoapTypes;
 
-class RelationGetChildRelationshipsResult
+use Bixie\PerfectviewApi\Client\PerfectviewResultInterface;
+use Bixie\PerfectviewApi\Client\PerfectviewResultTrait;
+
+class RelationGetChildRelationshipsResult implements PerfectviewResultInterface
 {
+
+    use PerfectviewResultTrait;
 
     /**
      * @var ArrayOfPvRelationshipData

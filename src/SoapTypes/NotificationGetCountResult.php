@@ -2,8 +2,13 @@
 
 namespace Bixie\PerfectviewApi\SoapTypes;
 
-class NotificationGetCountResult
+use Bixie\PerfectviewApi\Client\PerfectviewResultInterface;
+use Bixie\PerfectviewApi\Client\PerfectviewResultTrait;
+
+class NotificationGetCountResult implements PerfectviewResultInterface
 {
+
+    use PerfectviewResultTrait;
 
     /**
      * @var int

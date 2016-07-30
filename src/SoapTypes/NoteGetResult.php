@@ -2,8 +2,13 @@
 
 namespace Bixie\PerfectviewApi\SoapTypes;
 
-class NoteGetResult
+use Bixie\PerfectviewApi\Client\PerfectviewResultInterface;
+use Bixie\PerfectviewApi\Client\PerfectviewResultTrait;
+
+class NoteGetResult implements PerfectviewResultInterface
 {
+
+    use PerfectviewResultTrait;
 
     /**
      * @var PvNoteData

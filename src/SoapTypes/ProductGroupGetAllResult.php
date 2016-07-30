@@ -2,8 +2,13 @@
 
 namespace Bixie\PerfectviewApi\SoapTypes;
 
-class ProductGroupGetAllResult
+use Bixie\PerfectviewApi\Client\PerfectviewResultInterface;
+use Bixie\PerfectviewApi\Client\PerfectviewResultTrait;
+
+class ProductGroupGetAllResult implements PerfectviewResultInterface
 {
+
+    use PerfectviewResultTrait;
 
     /**
      * @var ArrayOfPvProductGroupData

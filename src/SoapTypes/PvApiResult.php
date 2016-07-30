@@ -2,8 +2,13 @@
 
 namespace Bixie\PerfectviewApi\SoapTypes;
 
-class PvApiResult
+use Bixie\PerfectviewApi\Client\PerfectviewResultInterface;
+use Bixie\PerfectviewApi\Client\PerfectviewResultTrait;
+
+class PvApiResult implements PerfectviewResultInterface
 {
+
+    use PerfectviewResultTrait;
 
 
 }

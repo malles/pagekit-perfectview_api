@@ -2,8 +2,13 @@
 
 namespace Bixie\PerfectviewApi\SoapTypes;
 
-class MobileRemoveDeviceIdResult
+use Bixie\PerfectviewApi\Client\PerfectviewResultInterface;
+use Bixie\PerfectviewApi\Client\PerfectviewResultTrait;
+
+class MobileRemoveDeviceIdResult implements PerfectviewResultInterface
 {
+
+    use PerfectviewResultTrait;
 
 
 }

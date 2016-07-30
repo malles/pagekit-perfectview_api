@@ -2,8 +2,13 @@
 
 namespace Bixie\PerfectviewApi\SoapTypes;
 
-class RelationshipRemoveMarkResult
+use Bixie\PerfectviewApi\Client\PerfectviewResultInterface;
+use Bixie\PerfectviewApi\Client\PerfectviewResultTrait;
+
+class RelationshipRemoveMarkResult implements PerfectviewResultInterface
 {
+
+    use PerfectviewResultTrait;
 
 
 }

@@ -2,6 +2,7 @@
 
 namespace Bixie\PerfectviewApi\CodeGenerator\Assembler;
 
+use Phpro\SoapClient\CodeGenerator\Assembler\AssemblerInterface;
 use Phpro\SoapClient\CodeGenerator\Context\ContextInterface;
 use Phpro\SoapClient\CodeGenerator\Context\PropertyContext;
 use Phpro\SoapClient\CodeGenerator\Context\TypeContext;
@@ -12,22 +13,27 @@ use Phpro\SoapClient\Exception\AssemblerException;
  *
  * @package Phpro\SoapClient\CodeGenerator\Assembler
  */
-class MethodAssembler implements AssemblerInterface
+class JsonSerializableAssembler implements AssemblerInterface
 {
-    /**
-     * @var
-     */
-    private $interfaceName;
+	/**
+	 * @var
+	 */
+	private $traitName;
+	/**
+	 * @var
+	 */
+	private $traitAlias;
 
-    /**
-     * InterfaceAssembler constructor.
-     *
-     * @param $interfaceName
-     */
-    public function __construct($interfaceName)
+	/**
+	 * InterfaceAssembler constructor.
+	 * @param $traitName
+	 * @param $traitAlias
+	 */
+    public function __construct($traitName, $traitAlias)
     {
-        $this->interfaceName = $interfaceName;
-    }
+		$this->traitName = $traitName;
+		$this->traitAlias = $traitAlias;
+	}
 
     /**
      * @param ContextInterface $context
@@ -36,7 +42,7 @@ class MethodAssembler implements AssemblerInterface
      */
     public function canAssemble(ContextInterface $context)
     {
-		return $context instanceof PropertyContext and $context->getProperty()->getName() == 'credentials';
+		return $context instanceof PropertyContext and substr($context->getProperty()->getName(), -4) == 'Data';
     }
 
     /**
@@ -45,18 +51,23 @@ class MethodAssembler implements AssemblerInterface
     public function assemble(ContextInterface $context)
     {
         $class = $context->getClass();
-        $interface = $this->interfaceName;
+        $trait = $this->traitName;
 
 
         try {
-            if (!in_array($interface, $class->getUses())) {
-                $class->addUse($interface);
+            if (!in_array($trait, $class->getUses())) {
+                $class->addUse($trait);
             }
 
             $interfaces = $class->getImplementedInterfaces();
-            if (!in_array($interface, $interfaces)) {
-                $interfaces[] = $interface;
+            if (!in_array('\JsonSerializable', $interfaces)) {
+                $interfaces[] = '\JsonSerializable';
                 $class->setImplementedInterfaces($interfaces);
+            }
+
+			$traits = $class->getTraits();
+            if (!in_array($this->traitAlias, $traits)) {
+                $class->addTrait($this->traitAlias);
             }
         } catch (\Exception $e) {
             throw AssemblerException::fromException($e);
