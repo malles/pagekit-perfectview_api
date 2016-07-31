@@ -10,46 +10,40 @@ use Phpro\SoapClient\Exception\AssemblerException;
 
 /**
  * Class InterfaceAssembler
- *
  * @package Phpro\SoapClient\CodeGenerator\Assembler
  */
-class JsonSerializableAssembler implements AssemblerInterface
-{
-	/**
-	 * @var
-	 */
-	private $traitName;
-	/**
-	 * @var
-	 */
-	private $traitAlias;
+class JsonSerializableAssembler implements AssemblerInterface {
+    /**
+     * @var
+     */
+    private $traitName;
+    /**
+     * @var
+     */
+    private $traitAlias;
 
-	/**
-	 * InterfaceAssembler constructor.
-	 * @param $traitName
-	 * @param $traitAlias
-	 */
-    public function __construct($traitName, $traitAlias)
-    {
-		$this->traitName = $traitName;
-		$this->traitAlias = $traitAlias;
-	}
+    /**
+     * InterfaceAssembler constructor.
+     * @param $traitName
+     * @param $traitAlias
+     */
+    public function __construct ($traitName, $traitAlias) {
+        $this->traitName = $traitName;
+        $this->traitAlias = $traitAlias;
+    }
 
     /**
      * @param ContextInterface $context
-     *
      * @return bool
      */
-    public function canAssemble(ContextInterface $context)
-    {
-		return $context instanceof PropertyContext and substr($context->getProperty()->getName(), -4) == 'Data';
+    public function canAssemble (ContextInterface $context) {
+        return $context instanceof PropertyContext and substr($context->getProperty()->getName(), -4) == 'Data';
     }
 
     /**
      * @param ContextInterface|TypeContext $context
      */
-    public function assemble(ContextInterface $context)
-    {
+    public function assemble (ContextInterface $context) {
         $class = $context->getClass();
         $trait = $this->traitName;
 
@@ -65,7 +59,7 @@ class JsonSerializableAssembler implements AssemblerInterface
                 $class->setImplementedInterfaces($interfaces);
             }
 
-			$traits = $class->getTraits();
+            $traits = $class->getTraits();
             if (!in_array($this->traitAlias, $traits)) {
                 $class->addTrait($this->traitAlias);
             }

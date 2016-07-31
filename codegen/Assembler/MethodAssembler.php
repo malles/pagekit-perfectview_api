@@ -10,11 +10,9 @@ use Phpro\SoapClient\Exception\AssemblerException;
 
 /**
  * Class InterfaceAssembler
- *
  * @package Phpro\SoapClient\CodeGenerator\Assembler
  */
-class MethodAssembler implements AssemblerInterface
-{
+class MethodAssembler implements AssemblerInterface {
     /**
      * @var
      */
@@ -22,29 +20,24 @@ class MethodAssembler implements AssemblerInterface
 
     /**
      * InterfaceAssembler constructor.
-     *
      * @param $interfaceName
      */
-    public function __construct($interfaceName)
-    {
+    public function __construct ($interfaceName) {
         $this->interfaceName = $interfaceName;
     }
 
     /**
      * @param ContextInterface $context
-     *
      * @return bool
      */
-    public function canAssemble(ContextInterface $context)
-    {
-		return $context instanceof PropertyContext and $context->getProperty()->getName() == 'credentials';
+    public function canAssemble (ContextInterface $context) {
+        return $context instanceof PropertyContext and $context->getProperty()->getName() == 'credentials';
     }
 
     /**
      * @param ContextInterface|TypeContext $context
      */
-    public function assemble(ContextInterface $context)
-    {
+    public function assemble (ContextInterface $context) {
         $class = $context->getClass();
         $interface = $this->interfaceName;
 

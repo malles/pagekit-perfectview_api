@@ -33,17 +33,17 @@ use Pagekit\Application as App;
  */
 class PerfectviewApiController {
 
-	/**
-	 * @Route("/", methods="GET")
-	 */
-	public function indexAction () {
-		$d = false;
-		$api_error = false;
-		$results = [];
-		try {
+    /**
+     * @Route("/", methods="GET")
+     */
+    public function indexAction () {
+        $d = false;
+        $api_error = false;
+        $results = [];
+        try {
 
-			$results['calls_today'] = App::pv_api()->call(new ApiGetCalls())->getUsedCallsToday();
-			$results['api_version'] = App::pv_api()->call(new ApiGetVersion())->getVersion();
+            $results['calls_today'] = App::pv_api()->call(new ApiGetCalls())->getUsedCallsToday();
+            $results['api_version'] = App::pv_api()->call(new ApiGetVersion())->getVersion();
 //			$workflows = App::pv_api()->call((new WorkflowGetAll()))->getWorkflows()->getPvWorkflowData();
 //			/** @var PvWorkflowData $pvWorkflowData */
 //			foreach ($workflows as $pvWorkflowData) {
@@ -75,21 +75,19 @@ class PerfectviewApiController {
 //			)->getActivities()->getPvActivityData();
 
 
-
-
-			$data = [
-				'Notes' => 'Mail gekregen van website',
-				'COR_date' => (new \DateTime())->format('Y-m-d H:i:s'),
-				'COR_yourreference' => 'Mail gekregen van website',
-				'COR_subject' => 'Mail gekregen van website',
-				'Number' => '2016/FL/005'
-			];
-			$relationships = App::pv_api()->call((new RelationshipSearchByEmail())
-				->setEmailAddress('test@email.nl')
-				->setIncludeFields(1)
-			)->getRelationships()->getPvRelationshipData();
-			/** @var PvRelationshipData $relationShip */
-			$relationship = $relationships[0];
+            $data = [
+                'Notes' => 'Mail gekregen van website',
+                'COR_date' => (new \DateTime())->format('Y-m-d H:i:s'),
+                'COR_yourreference' => 'Mail gekregen van website',
+                'COR_subject' => 'Mail gekregen van website',
+                'Number' => '2016/FL/005'
+            ];
+            $relationships = App::pv_api()->call((new RelationshipSearchByEmail())
+                ->setEmailAddress('test@email.nl')
+                ->setIncludeFields(1)
+            )->getRelationships()->getPvRelationshipData();
+            /** @var PvRelationshipData $relationShip */
+            $relationship = $relationships[0];
 //			$activity = App::pv_api()->createActivity($relationship, $data);
 //			$results['search_results']['ac'] = $activity;
 
@@ -107,63 +105,61 @@ class PerfectviewApiController {
 //				$values = App::pv_api()->getEntityValues($results['search_results']['pfp']);
 //				$results['search_results']['pfpd'] = $values->getValue('PER_relationcode');
 //			}
-			if ($results['search_results']['pe'] = App::pv_api()->relationByFields(['CON_email' => 'ferd@thefreighthero.com'])) {
-				$values = App::pv_api()->getEntityValues($results['search_results']['pe']);
-				$results['search_results']['ped'] = $values->getValue('COM_email');
-			}
+            if ($results['search_results']['pe'] = App::pv_api()->relationByFields(['CON_email' => 'ferd@thefreighthero.com'])) {
+                $values = App::pv_api()->getEntityValues($results['search_results']['pe']);
+                $results['search_results']['ped'] = $values->getValue('COM_email');
+            }
 
 
+        } catch (PerfectviewApiException $e) {
+            $api_error = $e->getMessage();
+            $d = App::pv_api()->debugLastSoapRequest();
+        }
+
+        return [
+            '$view' => [
+                'title' => __('Perfectview API'),
+                'name' => 'bixie/perfectview_api/admin/index.php'
+            ],
+            '$data' => [
+                'config' => App::module('bixie/perfectview_api')->config()
+            ],
+            'last_request_headers' => $d ? $d['request']['headers'] : false,
+            'last_request_body' => $d ? $d['request']['body'] : false,
+            'results' => $results,
+            'api_error' => $api_error
+        ];
+    }
 
 
-		} catch (PerfectviewApiException $e) {
-			$api_error = $e->getMessage();
-			$d = App::pv_api()->debugLastSoapRequest();
-		}
+    /**
+     * @Access("system: access settings")
+     */
+    public function settingsAction () {
 
-		return [
-			'$view' => [
-				'title' => __('Perfectview API'),
-				'name' => 'bixie/perfectview_api/admin/index.php'
-			],
-			'$data' => [
-				'config' => App::module('bixie/perfectview_api')->config()
-			],
-			'last_request_headers' => $d ? $d['request']['headers'] : false,
-			'last_request_body' => $d ? $d['request']['body'] : false,
-			'results' => $results,
-			'api_error' => $api_error
-		];
-	}
+        return [
+            '$view' => [
+                'title' => __('Perfectview Settings'),
+                'name' => 'bixie/perfectview_api/admin/settings.php'
+            ],
+            '$data' => [
+                'users' => array_values(App::pv_api()->getUsers()),
+                'workflows' => array_values(App::pv_api()->getWorkflows()),
+                'entityTypes' => array_values(App::pv_api()->getEntityTypes()),
+                'config' => App::module('bixie/perfectview_api')->config()
+            ]
+        ];
+    }
 
+    /**
+     * @Request({"config": "array"}, csrf=true)
+     * @Access("system: access settings")
+     */
+    public function configAction ($config = []) {
+        App::config('bixie/perfectview_api')->merge($config, true)
+            ->set('search_types', $config['search_types']);
 
-	/**
-	 * @Access("system: access settings")
-	 */
-	public function settingsAction () {
-
-		return [
-			'$view' => [
-				'title' => __('Perfectview Settings'),
-				'name' => 'bixie/perfectview_api/admin/settings.php'
-			],
-			'$data' => [
-				'users' => array_values(App::pv_api()->getUsers()),
-				'workflows' => array_values(App::pv_api()->getWorkflows()),
-				'entityTypes' => array_values(App::pv_api()->getEntityTypes()),
-				'config' => App::module('bixie/perfectview_api')->config()
-			]
-		];
-	}
-
-	/**
-	 * @Request({"config": "array"}, csrf=true)
-	 * @Access("system: access settings")
-	 */
-	public function configAction($config = []) {
-		App::config('bixie/perfectview_api')->merge($config, true)
-			->set('search_types', $config['search_types']);
-
-		return ['message' => 'success'];
-	}
+        return ['message' => 'success'];
+    }
 
 }

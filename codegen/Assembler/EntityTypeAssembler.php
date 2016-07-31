@@ -10,52 +10,46 @@ use Phpro\SoapClient\Exception\AssemblerException;
 
 /**
  * Class InterfaceAssembler
- *
  * @package Phpro\SoapClient\CodeGenerator\Assembler
  */
-class EntityTypeAssembler implements AssemblerInterface
-{
+class EntityTypeAssembler implements AssemblerInterface {
     /**
      * @var
      */
     private $interfaceName;
-	/**
-	 * @var
-	 */
-	private $traitName;
-	/**
-	 * @var
-	 */
-	private $traitAlias;
+    /**
+     * @var
+     */
+    private $traitName;
+    /**
+     * @var
+     */
+    private $traitAlias;
 
-	/**
-	 * InterfaceAssembler constructor.
-	 * @param $interfaceName
-	 * @param $traitName
-	 * @param $traitAlias
-	 */
-    public function __construct($interfaceName, $traitName, $traitAlias)
-    {
+    /**
+     * InterfaceAssembler constructor.
+     * @param $interfaceName
+     * @param $traitName
+     * @param $traitAlias
+     */
+    public function __construct ($interfaceName, $traitName, $traitAlias) {
         $this->interfaceName = $interfaceName;
-		$this->traitName = $traitName;
-		$this->traitAlias = $traitAlias;
-	}
+        $this->traitName = $traitName;
+        $this->traitAlias = $traitAlias;
+    }
 
     /**
      * @param ContextInterface $context
-     *
      * @return bool
      */
-    public function canAssemble(ContextInterface $context)
-    {
-		return $context instanceof PropertyContext and $context->getProperty()->getName() == 'EntityTypeId';
+    public function canAssemble (ContextInterface $context) {
+        return $context instanceof PropertyContext and $context->getProperty()->getName() == 'EntityTypeId';
     }
 
     /**
      * @param ContextInterface|TypeContext $context
      */
-    public function assemble(ContextInterface $context)
-    {
+    public function assemble (ContextInterface $context) {
         $class = $context->getClass();
         $interface = $this->interfaceName;
         $trait = $this->traitName;
@@ -75,7 +69,7 @@ class EntityTypeAssembler implements AssemblerInterface
                 $class->setImplementedInterfaces($interfaces);
             }
 
-			$traits = $class->getTraits();
+            $traits = $class->getTraits();
             if (!in_array($this->traitAlias, $traits)) {
                 $class->addTrait($this->traitAlias);
             }

@@ -20,7 +20,7 @@
                             <input type="text" v-model="user.data.perfectview_relation_code"
                                    class="uk-form-width-small"/>
                             <a @click="load" class="uk-icon-refresh uk-icon-hover uk-margin-small-left"
-                                :class="{'uk-icon-spin': loading}"></a>
+                               :class="{'uk-icon-spin': loading}"></a>
                         </div>
                     </div>
 
