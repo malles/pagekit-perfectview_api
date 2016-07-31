@@ -9,8 +9,9 @@ use Bixie\PerfectviewApi\SoapTypes\PvFieldData ;
  * Class PerfectviewFieldDataValue
  * @package Bixie\PerfectviewApi\Client
  */
-class PerfectviewFieldDataValue {
+class PerfectviewFieldDataValue implements \JsonSerializable {
 
+	use	JsonSerializableTrait;
 	/**
 	 * @var string|guid
 	 */
@@ -214,6 +215,5 @@ class PerfectviewFieldDataValue {
 		$this->Value = $Value;
 		return $this;
 	}
-
 
 }

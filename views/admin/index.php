@@ -25,5 +25,9 @@
 			<dd><?= $results['api_version'] ?></dd>
 		<?php endif; ?>
 	</dl>
+
+	<?php if (isset($results['search_results'])) : ?>
+		<pre><?= var_dump($results['search_results']) ?></pre>
+	<?php endif; ?>
 </div>
 

@@ -17,6 +17,13 @@ trait PerfectviewEntityTypeTrait {
 	}
 
 	/**
+	 * @return PerfectviewFieldDataValueCollection
+	 */
+	public function getFieldValues () {
+		return new PerfectviewFieldDataValueCollection([], []);
+	}
+
+	/**
 	 * @param PerfectviewFieldDataValueCollection $fieldDataValues
 	 * @return PerfectviewEntityTypeTrait
 	 */

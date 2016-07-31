@@ -2,7 +2,7 @@
   "name": "bixie/perfectview_api",
   "module": "bixie/perfectview_api",
   "type": "pagekit-extension",
-  "version": "0.0.7",
+  "version": "0.0.9",
   "title": "Bixie Perfectview Api",
   "description": "API client for Perfectview CRM.",
   "license": "MIT",
@@ -13,8 +13,13 @@
       "homepage": "http://www.bixie.org"
     }
   ],
+  "autoload": {
+    "psr-0": {
+      "Bixie\\PerfectviewApi\\CodeGenerator": "codegen/"
+    }
+  },
   "require": {
-    "phpro/soap-client": "~0.2.1"
+    "phpro/soap-client": "~0.2.2"
   },
   "extra": {
     "icon": "icon.svg",

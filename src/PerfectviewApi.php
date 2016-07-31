@@ -3,23 +3,47 @@
 
 namespace Bixie\PerfectviewApi;
 
+use Bixie\PerfectviewApi\ApiTrait\ActivityApiTrait;
+use Bixie\PerfectviewApi\ApiTrait\RelationApiTrait;
+use Bixie\PerfectviewApi\ApiTrait\StaticDataApiTrait;
+use Bixie\PerfectviewApi\ApiTrait\UserApiTrait;
+use Pagekit\Application as App;
 use Bixie\PerfectviewApi\Client\ClassMaps;
 use Bixie\PerfectviewApi\Client\PerfectviewClient;
 use Bixie\PerfectviewApi\Client\PerfectviewMethodInterface;
 use Bixie\PerfectviewApi\Client\PerfectviewRequest;
+use Bixie\PerfectviewApi\Client\PerfectviewEntityTypeInterface;
+use Bixie\PerfectviewApi\Client\PerfectviewFieldDataValueCollection;
 use Bixie\PerfectviewApi\SoapTypes\ApiCredentials;
 use Bixie\PerfectviewApi\SoapTypes\ApiSourceApplication;
+use Bixie\PerfectviewApi\SoapTypes\ArrayOfPvFieldValueData;
+use Bixie\PerfectviewApi\SoapTypes\PvFieldData;
+use Bixie\PerfectviewApi\SoapTypes\PvFieldValueData;
 use Monolog\Logger;
-use Pagekit\Application as App;
 use Phpro\SoapClient\ClientBuilder;
 use Phpro\SoapClient\ClientFactory;
 use Phpro\SoapClient\Type\ResultInterface;
 
 class PerfectviewApi {
 
+	use StaticDataApiTrait, RelationApiTrait, UserApiTrait, ActivityApiTrait;
+	/**
+	 * @var string
+	 */
 	const API_URL = 'https://api.perfectview.nl/V1/perfectview.asmx?WSDL';
+	/**
+	 * @var string
+	 */
 	const SOURCE_NAME = 'Bixie Perfectview API for Pagekit';
+	/**
+	 * @var string
+	 */
 	const SOURCE_VERSION = '0.1';
+	/**
+	 * @var \Bixie\PerfectviewApi\SoapTypes\guid
+	 */
+	const ROOT_GUID = '10000000-0000-0000-0000-000000000000';
+
 	/**
 	 * @var App
 	 */
@@ -28,6 +52,10 @@ class PerfectviewApi {
 	 * @var array
 	 */
 	protected $config;
+	/**
+	 * @var Logger
+	 */
+	protected $logger;
 	/**
 	 * @var PerfectviewClient
 	 */
@@ -53,11 +81,8 @@ class PerfectviewApi {
 		];
 		$clientBuilder = new ClientBuilder($clientFactory, self::API_URL, $soapOptions);
 		$clientBuilder->withLogger($this->logger);
-//		$clientBuilder->withEventDispatcher(new EventDispatcher());
 		$clientBuilder->withClassMaps((new ClassMaps())->getMapCollection());
-//		$clientBuilder->addTypeConverter(new DateTimeTypeConverter());
 		$this->api = $clientBuilder->build();
-
 	}
 
 	/**
@@ -67,7 +92,6 @@ class PerfectviewApi {
 	 * @return mixed
 	 */
 	public function __call ($name, $arguments) {
-
 		try {
 			return call_user_func_array([$this->api, $name], $arguments);
 		} catch (\SoapFault $e) {
@@ -89,6 +113,13 @@ class PerfectviewApi {
 	}
 
 	/**
+	 * @return Logger
+	 */
+	public function getLogger () {
+		return $this->logger;
+	}
+
+	/**
 	 * @return ApiCredentials
 	 */
 	public function getCredentials () {
@@ -102,7 +133,43 @@ class PerfectviewApi {
 		return $this->credentials;
 	}
 
+	/**
+	 * helper to setup ArrayOfPvFieldValueData object to submit data fields
+	 * @param PvFieldData[] $fieldDatas
+	 * @param array         $data
+	 * @return ArrayOfPvFieldValueData
+	 */
+	public function getFieldValueDatas (array $fieldDatas, array $data) {
+		$relationFieldValues = [];
+		foreach ($fieldDatas as $fieldData) {
+			if (isset($data[$fieldData->getName()])) {
+				$relationFieldValues[] = (new PvFieldValueData())
+					->setId($fieldData->getId())
+					->setValue($data[$fieldData->getName()]);
+			}
+		}
+		return (new ArrayOfPvFieldValueData())->setPvFieldValueData($relationFieldValues);
+	}
 
-
+	/**
+	 * Gets the fieldValueDatas from the objects and combines them with the valueDatas
+	 * @param PerfectviewEntityTypeInterface $object
+	 * @return PerfectviewFieldDataValueCollection
+	 */
+	public function getEntityValues (PerfectviewEntityTypeInterface $object) {
+		if ($object->getFieldDataValues()) {
+			return $object->getFieldDataValues();
+		}
+		if ($object->getFieldValues()) {
+			$entityData = $this->getEntityData($object->getEntityTypeId());
+			$fieldDataValueColl = new PerfectviewFieldDataValueCollection(
+				$entityData['fieldDatas'],
+				$object->getFieldValues()->getItems()->getPvFieldValueData()
+			);
+			$object->setFieldDataValues($fieldDataValueColl);
+			return $fieldDataValueColl;
+		}
+		return new PerfectviewFieldDataValueCollection([], []);
+	}
 
 }

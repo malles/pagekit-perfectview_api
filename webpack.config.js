@@ -3,7 +3,8 @@ module.exports = [
     {
         entry: {
             /*admin views*/
-            "perfectview_api-settings": "./app/views/admin/settings.js"
+            "perfectview_api-settings": "./app/views/admin/settings.js",
+            "user-section-perfectview": "./app/components/user-section-perfectview.vue",
         },
         output: {
             filename: "./app/bundle/[name].js"

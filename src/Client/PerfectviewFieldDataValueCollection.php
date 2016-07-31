@@ -6,7 +6,7 @@ namespace Bixie\PerfectviewApi\Client;
 use Bixie\PerfectviewApi\SoapTypes\PvFieldData ;
 use Bixie\PerfectviewApi\SoapTypes\PvFieldValueData;
 
-class PerfectviewFieldDataValueCollection  implements \IteratorAggregate {
+class PerfectviewFieldDataValueCollection  implements \IteratorAggregate, \JsonSerializable {
 	/**
 	 * @var PerfectviewFieldDataValue[]
 	 */
@@ -99,4 +99,10 @@ class PerfectviewFieldDataValueCollection  implements \IteratorAggregate {
 		return new \ArrayIterator($this->dataValues);
 	}
 
+	/**
+	 * @return array
+	 */
+	function jsonSerialize () {
+		return $this->all();
+	}
 }

@@ -39,7 +39,15 @@ return [
 	'config' => [
 		'api_key' => '',
 		'database_id' => '',
-		'user_id' => ''
+		'user_id' => '',
+		'search_types' => [],
+		'person_types' => [],
+		'organistation_types' => [],
+		'person_type' => '',
+		'person_relationship_type' => '',
+		'communication_workflow' => '',
+		'communication_workflow_step' => '',
+		'communication_user' => ''
 	],
 
 	'menu' => [
@@ -85,6 +93,10 @@ return [
 	'settings' => '@perfectview_api/settings',
 
 	'events' => [
+		'view.scripts' => function ($event, $scripts) use ($app) {
+			$scripts->register('user-section-perfectview', 'bixie/perfectview_api:app/bundle/user-section-perfectview.js', ['~user-edit']);
+		}
+
 	]
 
 ];
