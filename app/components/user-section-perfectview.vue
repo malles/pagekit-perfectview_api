@@ -58,13 +58,16 @@
                         </div>
                     </div>
                     <template v-if="!relation.IsDummy" v-for="group in datagroups">
-                        <h3>{{ group }}</h3>
-                        <dl class="uk-description-list-horizontal">
-                            <template v-for="value in fieldvalues[group] | orderBy 'SortIndex'">
-                                <dt>{{ value.Label }}</dt>
-                                <dd>{{ value.Value || '-' }}</dd>
-                            </template>
-                        </dl>
+                        <template v-if="groupExists('fieldvalues', group)">
+                            <h3>{{ group }}</h3>
+                            <dl class="uk-description-list-horizontal">
+                                <template v-for="value in fieldvalues[group] | orderBy 'SortIndex'">
+                                    <dt>{{ value.Label }}</dt>
+                                    <dd>{{ value.Value || '-' }}</dd>
+                                </template>
+                            </dl>
+                        </template>
+
                     </template>
                 </template>
                 <p v-else class="uk-alert" :class="{'uk-alert-danger': user.data.perfectview_link_person}">
@@ -125,13 +128,15 @@
                         </div>
                     </div>
                     <template v-if="!parent_relation.IsDummy" v-for="group in parent_datagroups">
-                        <h3>{{ group }}</h3>
-                        <dl class="uk-description-list-horizontal">
-                            <template v-for="value in parent_fieldvalues[group] | orderBy 'SortIndex'">
-                                <dt>{{ value.Label }}</dt>
-                                <dd>{{ value.Value || '-' }}</dd>
-                            </template>
-                        </dl>
+                        <template v-if="groupExists('parent_fieldvalues', group)">
+                            <h3>{{ group }}</h3>
+                            <dl class="uk-description-list-horizontal">
+                                <template v-for="value in parent_fieldvalues[group] | orderBy 'SortIndex'">
+                                    <dt>{{ value.Label }}</dt>
+                                    <dd>{{ value.Value || '-' }}</dd>
+                                </template>
+                            </dl>
+                        </template>
                     </template>
                 </template>
                 <p v-else class="uk-alert" :class="{'uk-alert-danger': user.data.perfectview_link_organisation}">
@@ -155,10 +160,10 @@
                 fieldvalues: {},
                 parent_relation: {},
                 parent_fieldvalues: {},
-                datagroups: ['Privé communicatie', 'Social media', 'Privé adres', 'Afwijkend adres',
+                datagroups: ['Communicatie', 'Adressering', 'Privé communicatie', 'Social media', 'Privé adres', 'Afwijkend adres',
                     'Identificatie', 'Bank', 'Administratie', 'Financieel', 'Audittrail'],
-                parent_datagroups: ['Bezoekadres', 'Communicatie', 'Social media', 'Postadres', 'Factuuradres',
-                    'Identificatie', 'Bank', 'Administratie', 'Financieel', 'Typering', 'Audittrail']
+                parent_datagroups: ['Bezoekadres', 'Communicatie', 'Adressering', 'Social media', 'Typering', 'Postadres', 'Factuuradres',
+                    'Identificatie', 'Bank', 'Administratie', 'Financieel', 'Afwijkend', 'Audittrail']
             };
         },
 
@@ -181,6 +186,9 @@
                     this.$notify(res.data.message || res.data, 'danger');
                     this.loading = false;
                 })
+            },
+            groupExists: function (groups, groupname) {
+                return this[groups][groupname] && this[groups][groupname].length;
             }
         },
 
