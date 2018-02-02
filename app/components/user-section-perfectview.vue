@@ -10,7 +10,7 @@
                         <div class="uk-form-controls uk-form-controls-text">
                             <label><input type="checkbox" class="uk-margin-small-right"
                                           v-model="user.data.perfectview_link_person"/>
-                                {{ 'Koppel aan persoon' | trans }}</label>
+                            {{ 'Koppel aan persoon' | trans }}</label>
                         </div>
                     </div>
 
@@ -71,7 +71,7 @@
                     </template>
                 </template>
                 <p v-else class="uk-alert" :class="{'uk-alert-danger': user.data.perfectview_link_person}">
-                    {{ 'Geen Perfectview persoon gekoppeld' | trans }}</p>
+                {{ 'Geen Perfectview persoon gekoppeld' | trans }}</p>
             </div>
             <div>
                 <div class="uk-margin uk-form">
@@ -81,7 +81,7 @@
                         <div class="uk-form-controls uk-form-controls-text">
                             <label><input type="checkbox" class="uk-margin-small-right"
                                           v-model="user.data.perfectview_link_organisation"/>
-                                {{ 'Koppel aan organisatie' | trans }}</label>
+                            {{ 'Koppel aan organisatie' | trans }}</label>
                         </div>
                     </div>
 
@@ -140,7 +140,7 @@
                     </template>
                 </template>
                 <p v-else class="uk-alert" :class="{'uk-alert-danger': user.data.perfectview_link_organisation}">
-                    {{ 'Geen organisatie gekoppeld' | trans }}</p>
+                {{ 'Geen organisatie gekoppeld' | trans }}</p>
             </div>
         </div>
 
@@ -149,56 +149,56 @@
 
 <script>
 
-    module.exports = {
+module.exports = {
 
-        props: ['user', 'config', 'form'],
+    props: ['user', 'config', 'form',],
 
-        data: function () {
-            return {
-                loading: false,
-                relation: {},
-                fieldvalues: {},
-                parent_relation: {},
-                parent_fieldvalues: {},
-                datagroups: ['Communicatie', 'Adressering', 'Privé communicatie', 'Social media', 'Privé adres', 'Afwijkend adres',
-                    'Identificatie', 'Bank', 'Administratie', 'Financieel', 'Audittrail'],
-                parent_datagroups: ['Bezoekadres', 'Communicatie', 'Adressering', 'Social media', 'Typering', 'Postadres', 'Factuuradres',
-                    'Identificatie', 'Bank', 'Administratie', 'Financieel', 'Afwijkend', 'Audittrail']
-            };
+    data: function () {
+        return {
+            loading: false,
+            relation: {},
+            fieldvalues: {},
+            parent_relation: {},
+            parent_fieldvalues: {},
+            datagroups: ['Communicatie', 'Adressering', 'Privé communicatie', 'Social media', 'Privé adres', 'Afwijkend adres',
+                'Identificatie', 'Bank', 'Administratie', 'Financieel', 'Audittrail',],
+            parent_datagroups: ['Bezoekadres', 'Communicatie', 'Adressering', 'Social media', 'Typering', 'Postadres', 'Factuuradres',
+                'Identificatie', 'Bank', 'Administratie', 'Financieel', 'Afwijkend', 'Audittrail',],
+        };
+    },
+
+    created: function () {
+        this.load();
+    },
+
+    methods: {
+        load: function () {
+            this.loading = true;
+            this.$resource('api/perfectview_api/userrelations{/id}').save({id: this.user.id,}, {user: this.user,}).then(function (res) {
+                this.relation = res.data.relation;
+                this.parent_relation = res.data.parent_relation;
+                this.$set('user.data.perfectview_relation_code', res.data.relation_code);
+                this.$set('user.data.perfectview_parent_relation_code', res.data.parent_relation_code);
+                this.fieldvalues = _.groupBy(this.relation.fieldDataValues, 'CategoryName');
+                this.parent_fieldvalues = _.groupBy(this.parent_relation.fieldDataValues, 'CategoryName');
+                this.loading = false;
+            }, function (res) {
+                this.$notify(res.data.message || res.data, 'danger');
+                this.loading = false;
+            })
         },
-
-        created: function () {
-            this.load();
+        groupExists: function (groups, groupname) {
+            return this[groups][groupname] && this[groups][groupname].length;
         },
+    },
 
-        methods: {
-            load: function () {
-                this.loading = true;
-                this.$resource('api/perfectview_api/userrelations{/id}').save({id: this.user.id}, {user: this.user}).then(function (res) {
-                    this.relation = res.data.relation;
-                    this.parent_relation = res.data.parent_relation;
-                    this.$set('user.data.perfectview_relation_code', res.data.relation_code);
-                    this.$set('user.data.perfectview_parent_relation_code', res.data.parent_relation_code);
-                    this.fieldvalues = _.groupBy(this.relation.fieldDataValues, 'CategoryName');
-                    this.parent_fieldvalues = _.groupBy(this.parent_relation.fieldDataValues, 'CategoryName');
-                    this.loading = false;
-                }, function (res) {
-                    this.$notify(res.data.message || res.data, 'danger');
-                    this.loading = false;
-                })
-            },
-            groupExists: function (groups, groupname) {
-                return this[groups][groupname] && this[groups][groupname].length;
-            }
-        },
+    section: {
+        label: 'Perfectview',
+        priority: 500,
+    },
 
-        section: {
-            label: 'Perfectview',
-            priority: 500
-        }
+};
 
-    };
-
-    window.User.components['user-section-perfectview:perfectview'] = module.exports;
+window.User.components['user-section-perfectview:perfectview'] = module.exports;
 
 </script>
